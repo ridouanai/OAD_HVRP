@@ -43,3 +43,4 @@ void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int vo
 // Recherche locale
 void deuxOPT(T_instance inst, T_tournee& tournee, int iter);
 void deplacerSommet(T_instance inst, T_tournee& tournee);
+void genererVoisinSwap(T_instance inst, T_tournee& tournee, T_tournee& voisin);

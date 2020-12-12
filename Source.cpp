@@ -361,3 +361,32 @@ void deplacerSommet(T_instance inst, T_tournee& tournee) {
 		tournee.cout += diffOpt;
 	}
 }
+
+void genererVoisinSwap(T_instance inst, T_tournee& tournee, T_tournee& voisin)
+{
+	int n = inst.n;
+	voisin = tournee;
+
+	int t1 = rand() % n + 1;
+	int t2 = rand() % n + 1;
+
+	while (voisin.list_clt[t1] == voisin.list_clt[t2])
+	{
+		t2 = rand() % n + 1;
+	}
+
+	// mettre à jour le cout 
+	double remove1, remove2, add1, add2;
+	remove1 = -inst.d[voisin.list_clt[t1 - 1]][voisin.list_clt[t1]] - inst.d[voisin.list_clt[t1]][voisin.list_clt[t1 + 1]];
+	remove2 = -inst.d[voisin.list_clt[t2 - 1]][voisin.list_clt[t2]] - inst.d[voisin.list_clt[t2]][voisin.list_clt[t2 + 1]];
+	add1 = inst.d[voisin.list_clt[t2 - 1]][voisin.list_clt[t1]] + inst.d[voisin.list_clt[t1]][voisin.list_clt[t2 + 1]];
+	add2 = inst.d[voisin.list_clt[t1 - 1]][voisin.list_clt[t2]] + inst.d[voisin.list_clt[t2]][voisin.list_clt[t1 + 1]];
+	voisin.cout += remove1 + add1 + remove2 + add2;
+
+	// Faire la permutation
+	int tmp = voisin.list_clt[t1];
+	voisin.list_clt[t1] = voisin.list_clt[t2];
+	voisin.list_clt[t2] = tmp;
+	
+
+}
