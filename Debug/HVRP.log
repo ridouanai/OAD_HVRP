@@ -1,4 +1,7 @@
-﻿  Source.cpp
+﻿  HVRP.cpp
+C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Header.h(31,19): warning C4200: nonstandard extension used: zero-sized array in struct/union
+C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Header.h(31,19): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
+  Source.cpp
 C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Header.h(31,19): warning C4200: nonstandard extension used: zero-sized array in struct/union
 C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Header.h(31,19): message : This member will be ignored by a defaulted constructor or copy/move assignment operator
 C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Source.cpp(89,36): warning C4101: 'dmin': unreferenced local variable
@@ -6,4 +9,5 @@ C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Source.cpp(89,30): warning C4101: 
 C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Source.cpp(178,36): warning C4101: 'dmin': unreferenced local variable
 C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Source.cpp(178,30): warning C4101: 'imin': unreferenced local variable
 C:\Users\Ridouan Aicha\source\repos\HVRP\HVRP\Source.cpp(299,28): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+  Generating Code...
   HVRP.vcxproj -> C:\Users\Ridouan Aicha\source\repos\HVRP\Debug\HVRP.exe

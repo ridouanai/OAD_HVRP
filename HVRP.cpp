@@ -15,8 +15,10 @@ int main()
     //plusProcheVoisinRand(mon_instance, tourneeG, 5);
     //heuristiqueChoisi(mon_instance, tourneeG, 5, 4);
     afficherTournee(mon_instance, tourneeG);
-    cout << endl << "After 2OPT: " << endl;
-    deuxOPT(mon_instance, tourneeG, 50);
+    //cout << endl << "After 2OPT: " << endl;
+    //deuxOPT(mon_instance, tourneeG, 50);
+    deplacerSommet(mon_instance, tourneeG);
+    cout << endl << "After deplacement sommet: " << endl;
     afficherTournee(mon_instance, tourneeG);
     delete(ptr_inst);
 }

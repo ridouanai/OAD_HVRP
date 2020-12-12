@@ -310,3 +310,54 @@ void deuxOPT(T_instance inst, T_tournee& tournee, int iter) {
 
 	}
 }
+
+void deplacerSommet(T_instance inst, T_tournee& tournee) {
+	double in1, out1, in2, out2;
+	int ipos = 0, jpos = 0;
+	int n = inst.n;
+	for (int i = 1; i < n - 2; i++) {
+		in1 = inst.d[tournee.list_clt[i - 1]][tournee.list_clt[i]] + inst.d[tournee.list_clt[i]][tournee.list_clt[i + 1]];
+		out1 = inst.d[tournee.list_clt[i - 1]][tournee.list_clt[i + 1]];
+		
+		double diffOpt = 0;
+		
+		for (int j = 1; j < n; j++) 
+		{
+			if (j != i)
+			{
+				in2 = inst.d[tournee.list_clt[j]][tournee.list_clt[i]] + inst.d[tournee.list_clt[i]][tournee.list_clt[j + 1]];
+				out2 = inst.d[tournee.list_clt[j]][tournee.list_clt[j + 1]];
+
+				double diff = -in1 + out1 + in2 - out2;
+
+				if (diff < diffOpt)
+				{
+					diffOpt = diff;
+					ipos = i;
+					jpos = j;
+				}
+			}
+		}
+		int k;
+		if (jpos > ipos)
+		{
+			int temp = tournee.list_clt[ipos];
+			for (k = ipos; k < jpos; k++)
+			{
+				tournee.list_clt[k] = tournee.list_clt[k + 1];
+
+			}
+			tournee.list_clt[jpos] = temp;
+		}
+		else {
+			int temp = tournee.list_clt[ipos];
+			for (k = ipos; k > jpos + 1; k--)
+			{
+				tournee.list_clt[k] = tournee.list_clt[k - 1];
+
+			}
+			tournee.list_clt[jpos + 1] = temp;
+		}
+		tournee.cout += diffOpt;
+	}
+}

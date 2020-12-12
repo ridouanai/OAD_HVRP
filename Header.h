@@ -33,8 +33,13 @@ typedef struct T_solution {
 
 
 void LireInstance(string file, T_instance& inst);
+void afficherTournee(T_instance inst, T_tournee& tournee);
+
+//Solution initiale
 void plusProcheVoisin(T_instance inst, T_tournee& tournee);
 void plusProcheVoisinRand(T_instance inst, T_tournee& tournee, int v);
 void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int voisinChoisi);
-void afficherTournee(T_instance inst, T_tournee& tournee);
+
+// Recherche locale
 void deuxOPT(T_instance inst, T_tournee& tournee, int iter);
+void deplacerSommet(T_instance inst, T_tournee& tournee);
