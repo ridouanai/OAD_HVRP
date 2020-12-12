@@ -40,6 +40,7 @@ void plusProcheVoisin(T_instance inst, T_tournee& tournee) {
 	int			i, j, tmp, pos, imin, clt, k;
 	double		dmin;
 	tournee.nc = inst.n;
+	tournee.cout = 0;
 	k = 0;
 	// remplir la liste par tous les clients
 	for (j = 0; j <= tournee.nc ; j++) {
@@ -69,6 +70,9 @@ void plusProcheVoisin(T_instance inst, T_tournee& tournee) {
 			}
 			k++;
 		}
+		// updater le cout:
+		tournee.cout += inst.d[clt][imin];
+		
 		// permuter l'elem de dont l'indice est i+1 avec le minimum
 		tmp = tournee.list_clt[pos];
 		tournee.list_clt[pos] = tournee.list_clt[i + 1];
@@ -76,6 +80,8 @@ void plusProcheVoisin(T_instance inst, T_tournee& tournee) {
 		i = i + 1;
 		clt = tournee.list_clt[i];
 	}
+	tournee.cout += inst.d[tournee.list_clt[i]][0];
+	tournee.list_clt[i + 1] = 0;
 }
 
 void plusProcheVoisinRand(T_instance inst, T_tournee& tournee, int v) {
@@ -84,6 +90,7 @@ void plusProcheVoisinRand(T_instance inst, T_tournee& tournee, int v) {
 	bool		found;
 	bool		tri;
 	tournee.nc = inst.n;
+	tournee.cout = 0;
 
 	// remplir la liste par tous les clients
 	for (t = 0; t <= tournee.nc; t++) {
@@ -152,12 +159,17 @@ void plusProcheVoisinRand(T_instance inst, T_tournee& tournee, int v) {
 			}
 			k++;
 		}
+
+		// updater le cout:
+		tournee.cout += inst.d[current][voisin];
+
 		// positionner le voisin choisit à cote de i
-		tmp = tournee.list_clt[pos];
 		tournee.list_clt[pos] = tournee.list_clt[i + 1];
-		tournee.list_clt[i + 1] = tmp;
+		tournee.list_clt[i + 1] = voisin;
 		i++;
 	}
+	tournee.cout += inst.d[tournee.list_clt[i]][0];
+	tournee.list_clt[i + 1] = 0;
 }
 
 void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int voisinChoisi) {
@@ -165,6 +177,7 @@ void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int vo
 	bool		found;
 	bool		tri;
 	tournee.nc = inst.n;
+	tournee.cout = 0;
 
 	//On va choisir un voisin parmis les nbVoisin plus proche:
 	int* mins = (int*)malloc(sizeof(int) * nbVoisin);
@@ -236,21 +249,27 @@ void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int vo
 			}
 			k++;
 		}
+
+		// updater le cout:
+		tournee.cout += inst.d[current][voisin];
+
 		// positionner le voisin choisit à cote de i
-		tmp = tournee.list_clt[pos];
 		tournee.list_clt[pos] = tournee.list_clt[i + 1];
-		tournee.list_clt[i + 1] = tmp;
+		tournee.list_clt[i + 1] = voisin;
 		i++;
 	}
+	tournee.cout += inst.d[tournee.list_clt[i]][0];
+	tournee.list_clt[i + 1] = 0;
 }
 
 void afficherTournee(T_instance inst, T_tournee& tournee)
 {
 	cout << "Tournee: \n";
-	for (int i = 0; i <= tournee.nc ; i++)
+	for (int i = 0; i <= tournee.nc + 1 ; i++)
 	{
 		cout << tournee.list_clt[i] << "  ";
 	}
+	cout << endl << "Le cout est:\t" << fixed << tournee.cout << endl;
 }
 
 
