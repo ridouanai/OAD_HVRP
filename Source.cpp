@@ -80,6 +80,7 @@ void plusProcheVoisin(T_instance inst, T_tournee& tournee) {
 		i = i + 1;
 		clt = tournee.list_clt[i];
 	}
+	tournee.cout += inst.d[tournee.list_clt[i-1]][tournee.list_clt[i]];
 	tournee.cout += inst.d[tournee.list_clt[i]][0];
 	tournee.list_clt[i + 1] = 0;
 }
@@ -168,6 +169,7 @@ void plusProcheVoisinRand(T_instance inst, T_tournee& tournee, int v) {
 		tournee.list_clt[i + 1] = voisin;
 		i++;
 	}
+	tournee.cout += inst.d[tournee.list_clt[i - 1]][tournee.list_clt[i]];
 	tournee.cout += inst.d[tournee.list_clt[i]][0];
 	tournee.list_clt[i + 1] = 0;
 }
@@ -258,6 +260,7 @@ void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int vo
 		tournee.list_clt[i + 1] = voisin;
 		i++;
 	}
+	tournee.cout += inst.d[tournee.list_clt[i - 1]][tournee.list_clt[i]];
 	tournee.cout += inst.d[tournee.list_clt[i]][0];
 	tournee.list_clt[i + 1] = 0;
 }
