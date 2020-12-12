@@ -160,6 +160,90 @@ void plusProcheVoisinRand(T_instance inst, T_tournee& tournee, int v) {
 	}
 }
 
+void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int voisinChoisi) {
+	int			i, j, k, t, pos, tmp, imin, dmin, current;
+	bool		found;
+	bool		tri;
+	tournee.nc = inst.n;
+
+	//On va choisir un voisin parmis les nbVoisin plus proche:
+	int* mins = (int*)malloc(sizeof(int) * nbVoisin);
+
+	// remplir la liste par tous les clients
+	for (t = 0; t <= tournee.nc; t++) {
+		tournee.list_clt[t] = t;
+	}
+
+	i = 0;
+	while (i < tournee.nc) {
+		current = tournee.list_clt[i];
+		if (tournee.nc - i < nbVoisin) {
+			nbVoisin--;
+		}
+		//remplir mins par les v cases a cote de i
+		for (t = 0; t < nbVoisin; t++) {
+			mins[t] = tournee.list_clt[i + t + 1];
+		}
+
+		// trier mins
+		tri = false;
+		k = nbVoisin;
+		while (!tri) {
+			tri = true;
+			for (t = 0; t < k - 1; t++) {
+				if (inst.d[current][mins[t]] > inst.d[current][mins[t + 1]]) {
+					tmp = mins[t];
+					mins[t] = mins[t + 1];
+					mins[t + 1] = tmp;
+					tri = false;
+				}
+			}
+			k--;
+		}
+
+		// determiner les vrais v plus proche voisins de i
+		for (t = i + nbVoisin + 1; t <= tournee.nc; t++) {
+			int courant = tournee.list_clt[t];
+			pos = -1;
+			j = 0;
+			found = false;
+			while (!found && j < nbVoisin) {
+				if (inst.d[current][courant] < inst.d[current][mins[j]]) {
+					pos = j;
+					found = true;
+				}
+				j++;
+			}
+			// si on a trouver une distance inf stritement a une dans le mins 
+			if (pos != -1) {
+				for (k = nbVoisin - 1; k > pos; k--) {
+					mins[k] = mins[k - 1];
+				}
+				mins[pos] = courant;
+			}
+		}
+
+		// choisir le jéme plus proche voisin (j = voisinChoisi - 1)
+		int voisin = mins[voisinChoisi-1];
+
+		// trouver la position du voisin choisi dans list_client
+		k = i + 1;
+		pos = -1;
+		while (pos == -1 && k <= tournee.nc)
+		{
+			if (tournee.list_clt[k] == voisin) {
+				pos = k;
+			}
+			k++;
+		}
+		// positionner le voisin choisit à cote de i
+		tmp = tournee.list_clt[pos];
+		tournee.list_clt[pos] = tournee.list_clt[i + 1];
+		tournee.list_clt[i + 1] = tmp;
+		i++;
+	}
+}
+
 void afficherTournee(T_instance inst, T_tournee& tournee)
 {
 	cout << "Tournee: \n";

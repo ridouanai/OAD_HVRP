@@ -35,4 +35,5 @@ typedef struct T_solution {
 void LireInstance(string file, T_instance& inst);
 void plusProcheVoisin(T_instance inst, T_tournee& tournee);
 void plusProcheVoisinRand(T_instance inst, T_tournee& tournee, int v);
+void heuristiqueChoisi(T_instance inst, T_tournee& tournee, int nbVoisin, int voisinChoisi);
 void afficherTournee(T_instance inst, T_tournee& tournee);
