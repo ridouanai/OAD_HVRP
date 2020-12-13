@@ -298,11 +298,11 @@ void deuxOPT(T_instance inst, T_tournee& tournee, int iter) {
 					tournee.list_clt[k] = tournee.list_clt[t];
 					tournee.list_clt[t] = tmp;
 				}
+				cout << endl << " " << tournee.list_clt[i + 1] << " => " << tournee.list_clt[j] << endl;
 				stop = 1;
 				compteur++;
 				i = 0;
 				tournee.cout += diff;
-				cout << endl << " " << tournee.list_clt[i + 1] << " => " << tournee.list_clt[j] << endl;
 			}
 			j++;
 		}
@@ -389,4 +389,82 @@ void genererVoisinSwap(T_instance inst, T_tournee& tournee, T_tournee& voisin)
 	voisin.list_clt[t2] = tmp;
 	
 
+}
+
+void split(T_instance inst, T_tournee& tournee, T_solution solution)
+{
+	int n = inst.n;
+	int nc = inst.nt;
+	int i, j, l, c, res;
+	int stop;
+	T_listLabel LL[nmax];
+	double mark[nmax], Pere[nmax];
+	double cout, load, distance;
+
+	//initialiser les labels du sommet 1: contient un seul label 
+	for (i = 1; i <= nc; i++)
+	{
+		LL[0].list[0].types[i] = inst.ntc[i];
+		LL[0].list[0].cout = 0;
+		LL[0].list[0].position = 0;
+		LL[0].list[0].pere = 0;
+		LL[0].size = 1;
+	}
+	mark[0] = 0;
+
+	//initialiser la taille des listes pour les autres sommets
+	for (i = 1; i <= n; i++) 
+	{
+		LL[i].size = 0;
+		mark[i] = infini;
+	}
+
+	//la construction du graphe
+	for (i = 0; i <= n - 1; i++)
+	{	
+		j = i + 1;
+		stop = 0;
+		while ((j <= n) && (stop == 0))
+		{
+			for (c = 1; c <= nc; c++) //Pour chaque type de camion
+			{ 
+				if (inst.Capa[c] > inst.D[tournee.list_clt[j]]) // capa suffisante
+				{
+					for (l = 1; l <= LL[i].size; l++) //Pour chaque label
+					{
+						T_label label = LL[i].list[l];
+						T_label Q = label;
+						Q.types[c] = label.types[c] - 1;
+						if (j == i + 1) //le premier clt dans la tournee
+						{
+							distance = inst.d[0][tournee.list_clt[j]] + inst.d[tournee.list_clt[j]][0];
+							cout = inst.Cf[c] + inst.Cv[c] * distance;
+							load = inst.D[tournee.list_clt[j]];
+						}
+						else
+						{
+							distance = -inst.d[tournee.list_clt[j - 1]][0] + inst.d[tournee.list_clt[j - 1]][tournee.list_clt[j]] + inst.d[tournee.list_clt[j]][0];
+							cout = label.cout + distance * inst.Cv[c];
+							load = label.charge + inst.D[tournee.list_clt[j]];
+						}
+						testerInsertion(LL[i], Q, res);
+						if (res == 1)
+						{
+							//insert it
+						}
+						else
+						{
+							//skip it
+						}
+					}
+				}
+				else
+				{
+					stop = 1;
+				}
+			}
+		}
+	}
+
+	// Construire les tournées
 }

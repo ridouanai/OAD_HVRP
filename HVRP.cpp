@@ -18,7 +18,7 @@ int main()
     //cout << endl << "After 2OPT: " << endl;
     //deuxOPT(mon_instance, tourneeG, 50);
     deplacerSommet(mon_instance, tourneeG);
-    cout << endl << "After deplacement sommet: " << endl;
+    //cout << endl << "After deplacement sommet: " << endl;
     afficherTournee(mon_instance, tourneeG);
     delete(ptr_inst);
 }
