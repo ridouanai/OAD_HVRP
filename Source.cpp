@@ -391,7 +391,34 @@ void genererVoisinSwap(T_instance inst, T_tournee& tournee, T_tournee& voisin)
 
 }
 
-void split(T_instance inst, T_tournee& tournee, T_solution solution)
+void testerInsertion(T_instance& instance, T_listLabel& labels, T_label& Q, int& res)
+{
+	res = 1;
+	int sameDispo = 1;
+	for (int i = 0; i < labels.size; i++)
+	{
+		for (int j = 1; j <= instance.nt; j++)
+		{
+			if (labels.list->types[j] != Q.types[j])
+			{
+				sameDispo = 0;
+			}
+		}
+		if (sameDispo == 1)
+		{
+			if (labels.list[i].cout > Q.cout)
+			{
+				// supprimer le label labels.list[i] et ajouter Q donc res reste à 1
+			}
+			else
+			{
+				res = 0;
+			}
+		}
+	}
+}
+
+void split(T_instance& inst, T_tournee& tournee, T_solution& solution)
 {
 	int n = inst.n;
 	int nc = inst.nt;
@@ -405,18 +432,18 @@ void split(T_instance inst, T_tournee& tournee, T_solution solution)
 	for (i = 1; i <= nc; i++)
 	{
 		LL[0].list[0].types[i] = inst.ntc[i];
-		LL[0].list[0].cout = 0;
-		LL[0].list[0].position = 0;
-		LL[0].list[0].pere = 0;
-		LL[0].size = 1;
 	}
-	mark[0] = 0;
+	LL[0].list[0].cout = 0;
+	LL[0].list[0].position = 0;
+	LL[0].list[0].pere = NULL;
+	LL[0].size = 1;
+
 
 	//initialiser la taille des listes pour les autres sommets
 	for (i = 1; i <= n; i++) 
 	{
 		LL[i].size = 0;
-		mark[i] = infini;
+		//mark[i] = infini;
 	}
 
 	//la construction du graphe
@@ -424,37 +451,46 @@ void split(T_instance inst, T_tournee& tournee, T_solution solution)
 	{	
 		j = i + 1;
 		stop = 0;
+		load = 0;
 		while ((j <= n) && (stop == 0))
 		{
+			//LL[j].size = 0;
 			for (c = 1; c <= nc; c++) //Pour chaque type de camion
 			{ 
-				if (inst.Capa[c] > inst.D[tournee.list_clt[j]]) // capa suffisante
+				if (inst.Capa[c] >= inst.D[tournee.list_clt[j]] + load) // capa suffisante
 				{
-					for (l = 1; l <= LL[i].size; l++) //Pour chaque label
+					for (l = 0; l <= LL[i].size; l++) //Pour chaque label
 					{
 						T_label label = LL[i].list[l];
 						T_label Q = label;
-						Q.types[c] = label.types[c] - 1;
-						if (j == i + 1) //le premier clt dans la tournee
+
+						if (label.types[c] > 0)
 						{
-							distance = inst.d[0][tournee.list_clt[j]] + inst.d[tournee.list_clt[j]][0];
-							cout = inst.Cf[c] + inst.Cv[c] * distance;
-							load = inst.D[tournee.list_clt[j]];
-						}
-						else
-						{
-							distance = -inst.d[tournee.list_clt[j - 1]][0] + inst.d[tournee.list_clt[j - 1]][tournee.list_clt[j]] + inst.d[tournee.list_clt[j]][0];
-							cout = label.cout + distance * inst.Cv[c];
-							load = label.charge + inst.D[tournee.list_clt[j]];
-						}
-						testerInsertion(LL[i], Q, res);
-						if (res == 1)
-						{
-							//insert it
-						}
-						else
-						{
-							//skip it
+							//std::cout << endl << "i: " << i << " j: " << j << "size est: " << LL[j].size << endl;
+							Q.types[c] = label.types[c] - 1;
+							Q.position = l;
+							if (j == i + 1) //le premier clt dans la tournee
+							{
+								distance = inst.d[0][tournee.list_clt[j]] + inst.d[tournee.list_clt[j]][0];
+								cout = inst.Cf[c] + inst.Cv[c] * distance;
+								load = inst.D[tournee.list_clt[j]];
+								Q.cout = cout;
+								Q.pere = i;
+							}
+							else
+							{
+								distance = -inst.d[tournee.list_clt[j - 1]][0] + inst.d[tournee.list_clt[j - 1]][tournee.list_clt[j]] + inst.d[tournee.list_clt[j]][0];
+								cout = label.cout + distance * inst.Cv[c];
+								load = label.charge + inst.D[tournee.list_clt[j]];
+								Q.cout = cout;
+								Q.pere = label.pere;
+							}
+							testerInsertion(inst, LL[j], Q, res);
+							if (res == 1)
+							{
+								LL[j].list[LL[j].size] = Q;
+								LL[j].size++;
+							}
 						}
 					}
 				}
@@ -463,8 +499,76 @@ void split(T_instance inst, T_tournee& tournee, T_solution solution)
 					stop = 1;
 				}
 			}
+			j++;
+		}
+	}
+	// Construire les tournées
+}
+
+void TransformToTour(T_instance& inst, T_solution& solution, T_tournee& tournee) {
+	
+	tournee.cout = 0;
+	tournee.list_clt[0] = 0;
+	tournee.nc = inst.n + 2;
+	int j, t = 1;
+
+	for (int i = 0; i < solution.nt; i++) {
+		j = 1;
+		while (solution.tours[i].list_clt[j] != 0)
+		{
+			tournee.list_clt[t] = solution.tours[i].list_clt[j];
+			tournee.cout = tournee.cout + inst.d[tournee.list_clt[t - 1]][tournee.list_clt[t]];
+			t++;
+			j++;
+		}
+	}
+	// Ajouter le depot vers la fin de la tournee
+	tournee.list_clt[t] = 0;
+	tournee.cout += inst.d[tournee.list_clt[t - 1]][0];
+}
+
+void GraspxELS(T_instance& inst, T_solution& solution, int iterMax)
+{
+	int n = inst.n;
+	double choix1, choix2;
+	T_tournee tournee;
+	T_tournee voisin1, voisin2;
+	// Transformer la solution en tour geant
+	TransformToTour(inst, solution, tournee);
+
+	for (int i = 0; i < iterMax; i++)
+	{
+		// Generer les deux voisins de tournee
+		genererVoisinSwap(inst, tournee, voisin1);
+		genererVoisinSwap(inst, tournee, voisin2);
+
+		// Faire un choix aléatoire de la methode de la recherche locale pour les deux voisins
+		choix1 = (double)rand();
+		choix2 = (double)rand();
+		if (choix1 < 0.5)
+		{
+			deuxOPT(inst, voisin1, iterMax);
+		}
+		else {
+			deplacerSommet(inst, voisin1);
+		}
+		if (choix2 < 0.5)
+		{
+			deuxOPT(inst, voisin2, iterMax);
+		}
+		else {
+			deplacerSommet(inst, voisin2);
+		}
+
+		// Prendre le voisin qui a le cout minimal 
+		if (voisin1.cout < voisin2.cout) {
+			tournee = voisin1;
+		}
+		else {
+			tournee = voisin2;
 		}
 	}
 
-	// Construire les tournées
+	//Construire les tournees de dernier tour geant choisi
+	split(inst, tournee, solution);
 }

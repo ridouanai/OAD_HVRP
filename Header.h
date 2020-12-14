@@ -6,7 +6,7 @@ using namespace std;
 int const nmax = 300;
 int const ntmax = 100;
 int const infini = INT_MAX;
-int const maxLabels = 30;
+int const maxLabels = 100;
 int const maxTypeCamion = 30;
 
 typedef struct T_instance{
@@ -59,5 +59,9 @@ void deuxOPT(T_instance inst, T_tournee& tournee, int iter);
 void deplacerSommet(T_instance inst, T_tournee& tournee);
 void genererVoisinSwap(T_instance inst, T_tournee& tournee, T_tournee& voisin);
 
-void split(T_instance inst, T_tournee& tournee, T_solution solution);
-void testerInsertion(T_listLabel& labels,T_label& Q, int& res);
+void split(T_instance& inst, T_tournee& tournee, T_solution& solution);
+void testerInsertion(T_instance& instance, T_listLabel& labels,T_label& Q, int& res);
+
+// Grasp
+void TransformToTour(T_instance& inst, T_solution& solution, T_tournee& tournee);
+void GraspxELS(T_instance& inst, T_solution& solution, int iterMax);
